@@ -1,6 +1,6 @@
 package ternary
 
-// Replace the missing ternary operator in Go
+// If is the replacement ternary operator in Go
 //
 // Usage:
 //
@@ -15,4 +15,22 @@ func If[T any](condition bool, a, b T) T {
 		return a
 	}
 	return b
+}
+
+// IfFunc implements a given function using the chosen element as parameter
+//
+// Usage:
+//
+//	ternary.If(condition bool, elementPassedIfTrue, elementPassedIfFalse, function func(element))
+//
+// Example:
+//
+//	ternary.If(true, "foo", "bar", func(e any) {
+//		return fmt.Sprintf("%v", e)
+//	}) // returns "foo"
+func IfFunc[T any](condition bool, a, b T, f func(T) T) T {
+	if condition {
+		return f(a)
+	}
+	return f(b)
 }
