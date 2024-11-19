@@ -28,7 +28,7 @@ func If[T any](condition bool, a, b T) T {
 //	ternary.If(true, "foo", "bar", func(e any) {
 //		return fmt.Sprintf("%v", e)
 //	}) // returns "foo"
-func IfFunc[T any](condition bool, a, b T, f func(T) T) T {
+func IfFunc[T any R any](condition bool, a, b T, f func(T) R) R {
 	if condition {
 		return f(a)
 	}
