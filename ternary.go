@@ -21,11 +21,11 @@ func If[T any](condition bool, a, b T) T {
 //
 // Usage:
 //
-//	ternary.If(condition bool, elementPassedIfTrue, elementPassedIfFalse, function func(element))
+//	ternary.IfFunc(condition bool, elementPassedIfTrue, elementPassedIfFalse, function func(element))
 //
 // Example:
 //
-//	ternary.If(true, "foo", "bar", func(e any) {
+//	ternary.IfFunc(true, "foo", "bar", func(e any) {
 //		return fmt.Sprintf("%v", e)
 //	}) // returns "foo"
 func IfFunc[T any, R any](condition bool, a, b T, f func(T) R) R {
@@ -43,9 +43,9 @@ func IfFunc[T any, R any](condition bool, a, b T, f func(T) R) R {
 //
 // Example:
 //
-//	ternary.If(true, func() string { return "foo"}, func() string { return "bar"})
-//  // returns "foo"
-
+//	ternary.Iff(true,
+//		func() string { return "foo"},
+//		func() string { return "bar"}) // returns "foo"
 func Iff[T any](condition bool, a, b func() T) T {
 	if condition {
 		return a()
