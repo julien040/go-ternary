@@ -25,10 +25,18 @@ ternary.If(true, "foo", "bar") // "foo"
 ternary.If(false, "foo", "bar") // "bar"
 
 // Use it for pluralization
-ternary.If(len(slice) > 2, "objects", "object") // "objects"
+ternary.If(len(slice) != 1, "objects", "object") // "objects"
 
 ternary.If(true, 5.4, 3.2) // 5.4
 
+// Do not use it like this, because both funcs will be evaluated regardless of condition!
+ternary.If(true, trueFunc(), falseFunc())
+
+// Instead, use the Iff function...
+ternary.Iff(true, trueFunc, falseFunc)
+
+// or with closures if the funcs require arguments
+ternary.Iff(true, func() string { return truefunc(...)}, , func() string { return falsefunc(...)})
 ```
 
 ## FAQ
