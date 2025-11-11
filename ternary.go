@@ -34,3 +34,21 @@ func IfFunc[T any, R any](condition bool, a, b T, f func(T) R) R {
 	}
 	return f(b)
 }
+
+// Iff executes a function a or b based on the condition.
+//
+// Usage:
+//
+//	ternary.Iff(condition bool, funcIfTrue, funcIfFalse)
+//
+// Example:
+//
+//	ternary.If(true, func() string { return "foo"}, func() string { return "bar"})
+//  // returns "foo"
+
+func Iff[T any](condition bool, a, b func() T) T {
+	if condition {
+		return a()
+	}
+	return b()
+}
