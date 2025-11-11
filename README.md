@@ -36,7 +36,7 @@ ternary.If(true, trueFunc(), falseFunc())
 ternary.Iff(true, trueFunc, falseFunc)
 
 // or with closures if the funcs require arguments
-ternary.Iff(true, func() string { return truefunc(...)}, , func() string { return falsefunc(...)})
+ternary.Iff(true, func() string { return trueFunc(...)}, , func() string { return falseFunc(...)})
 ```
 
 ## FAQ
