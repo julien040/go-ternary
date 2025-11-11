@@ -387,3 +387,302 @@ func TestIfFunc(t *testing.T) {
 		})
 	}
 }
+
+func TestIff(t *testing.T) {
+
+	var trueCalled, falseCalled bool
+
+	type args struct {
+		condition bool
+		a         func() T
+		b         func() T
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want T
+	}{
+		{
+			name: "String True",
+			args: args{
+				condition: true,
+				a: func() T {
+					trueCalled = true
+					return "foo"
+				},
+				b: func() T {
+					falseCalled = true
+					return "bar"
+				},
+			},
+			want: "foo",
+		},
+
+		{
+			name: "String False",
+			args: args{
+				condition: false,
+				a: func() T {
+					trueCalled = true
+					return "foo"
+				},
+				b: func() T {
+					falseCalled = true
+					return "bar"
+				},
+			},
+			want: "bar",
+		},
+
+		{
+			name: "Int True",
+			args: args{
+				condition: true,
+				a: func() T {
+					trueCalled = true
+					return 1
+				},
+				b: func() T {
+					falseCalled = true
+					return 2
+				},
+			},
+			want: 1,
+		},
+
+		{
+			name: "Int False",
+			args: args{
+				condition: false,
+				a: func() T {
+					trueCalled = true
+					return 1
+				},
+				b: func() T {
+					falseCalled = true
+					return 2
+				},
+			},
+			want: 2,
+		},
+
+		{
+			name: "Float True",
+			args: args{
+				condition: true,
+				a: func() T {
+					trueCalled = true
+					return 1.1
+				},
+				b: func() T {
+					falseCalled = true
+					return 2.2
+				},
+			},
+			want: 1.1,
+		},
+
+		{
+			name: "Float False",
+			args: args{
+				condition: false,
+				a: func() T {
+					trueCalled = true
+					return 1.1
+				},
+				b: func() T {
+					falseCalled = true
+					return 2.2
+				},
+			},
+			want: 2.2,
+		},
+
+		{
+			name: "Bool True",
+			args: args{
+				condition: true,
+				a: func() T {
+					trueCalled = true
+					return true
+				},
+				b: func() T {
+					falseCalled = true
+					return false
+				},
+			},
+			want: true,
+		},
+
+		{
+			name: "Bool False",
+			args: args{
+				condition: false,
+				a: func() T {
+					trueCalled = true
+					return true
+				},
+				b: func() T {
+					falseCalled = true
+					return false
+				},
+			},
+			want: false,
+		},
+
+		{
+			name: "Struct True",
+			args: args{
+				condition: true,
+				a: func() T {
+					trueCalled = true
+					return struct{ foo string }{foo: "foo"}
+				},
+				b: func() T {
+					falseCalled = true
+					return struct{ foo string }{foo: "bar"}
+				},
+			},
+			want: struct{ foo string }{foo: "foo"},
+		},
+
+		{
+			name: "Struct False",
+			args: args{
+				condition: false,
+				a: func() T {
+					trueCalled = true
+					return struct{ foo string }{foo: "foo"}
+				},
+				b: func() T {
+					falseCalled = true
+					return struct{ foo string }{foo: "bar"}
+				},
+			},
+			want: struct{ foo string }{foo: "bar"},
+		},
+
+		{
+			name: "Slice True",
+			args: args{
+				condition: true,
+				a: func() T {
+					trueCalled = true
+					return []string{"foo"}
+				},
+				b: func() T {
+					falseCalled = true
+					return []string{"bar"}
+				},
+			},
+			want: []string{"foo"},
+		},
+
+		{
+			name: "Slice False",
+			args: args{
+				condition: false,
+				a: func() T {
+					trueCalled = true
+					return []string{"foo"}
+				},
+				b: func() T {
+					falseCalled = true
+					return []string{"bar"}
+				},
+			},
+			want: []string{"bar"},
+		},
+
+		{
+			name: "Map True",
+			args: args{
+				condition: true,
+				a: func() T {
+					trueCalled = true
+					return map[string]string{"foo": "foo"}
+				},
+				b: func() T {
+					falseCalled = true
+					return map[string]string{"foo": "bar"}
+				},
+			},
+			want: map[string]string{"foo": "foo"},
+		},
+
+		{
+			name: "Map False",
+			args: args{
+				condition: false,
+				a: func() T {
+					trueCalled = true
+					return map[string]string{"foo": "foo"}
+				},
+				b: func() T {
+					falseCalled = true
+					return map[string]string{"foo": "bar"}
+				},
+			},
+			want: map[string]string{"foo": "bar"},
+		},
+
+		{
+			name: "Interface True",
+			args: args{
+				condition: true,
+				a: func() T {
+					trueCalled = true
+					return interface{}("foo")
+				},
+				b: func() T {
+					falseCalled = true
+					return interface{}("bar")
+				},
+			},
+			want: interface{}("foo"),
+		},
+
+		{
+			name: "Interface False",
+			args: args{
+				condition: false,
+				a: func() T {
+					trueCalled = true
+					return interface{}("foo")
+				},
+				b: func() T {
+					falseCalled = true
+					return interface{}("bar")
+				},
+			},
+			want: interface{}("bar"),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			trueCalled, falseCalled = false, false
+
+			if got := Iff(tt.args.condition, tt.args.a, tt.args.b); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Ternary() = %v, want %v", got, tt.want)
+			}
+			if tt.args.condition {
+				if !trueCalled {
+					t.Error("Expected true func (a) to be called")
+				}
+				if falseCalled {
+					t.Error("Expected false func (b) not to be called")
+				}
+			} else {
+				if trueCalled {
+					t.Error("Expected true func (a) not to be called")
+				}
+				if !falseCalled {
+					t.Error("Expected false func (b) to be called")
+				}
+			}
+		})
+	}
+
+}
